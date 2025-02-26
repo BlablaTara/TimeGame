@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Too Late??</title>
+</head>
+<body>
+   
+    <script>
+        let choosenTime = null;
+        let clickTime = null;
+
+        function startTest() {
+            const inputTime = document.getElementById("targetTime").value;
+            if (!inputTime) {
+                alert("Hov! Du skal vælge et tidspunkt!");
+                return;
+            }
+
+            const now = new Date();
+            const [hours, minutes] = inputTime.split(":").map(Number);
+            choosenTime = new Date();
+            choosenTime.setHours(hours, minutes, 0, 0);
+
+            document.getElementById("clickButton").disabled = false;
+            document.getElementById("message").innerText = "Perfekt, nu skal du vente til du nærmer dig det rigtige tidspunkt...";
+            document.getElementById("resultBox").style.display = "none";
+        }
+
+        function recordClick() {
+            clickTime = new Date();
+            if (!choosenTime) 
+            return;
+
+            const diff = Math.floor((clickTime - choosenTime) / 1000);
+            let message = "";
+
+            if (diff === 0) {
+                message = '"Døren til klasselokalet er stadig åben "Neeej hvor flot! Det er derfor du er min yndlingselev!" - Siger Anders rosende til dig"';
+            } else if (diff >= -10 && diff <= -1) {
+                message = '"Anders kommer smilende ind med sin kop kaffe i hånden og nikker til dig."';
+            } else if (diff >= -60 && diff <= -11) {
+                message = '"Anders kommer hen og spørger venligt til din dag."';
+            } else if (diff >= -300 && diff <= -61) {
+                message = '"Du går ind af den åbne dør til klasse værelset "Hvad sker der for at de andre elever bare ikke er lige så gode som dig, til at komme til tiden?" - siger Anders smilende til dig"';
+            } else if (diff >= -600 && diff <= -301) {
+                message = '"Du går ind af den åbne dør til klasse værelset "Nååh, har du ikke andet at tage dig til end at sidde her og glo?" - Siger Anders til dig imens han ryster på hovedet af dig"';
+            } else if (diff >= -900 && diff <= -601) {
+                message = '"Du går ind af den åbne dør til klasse værelset "Jeg håber godt nok at du HAR lavet dine lektier, siden du har tid til at komme for tidligt" - Siger Anders koldt til dig"';
+            } else if (diff < -900) {
+                message = '"Anders kigger koldt på dig, og ryster på hovedet. "Du er åndssvag" - siger han til dig, over at du er kommet SÅ meget for tidligt."';
+            } else if (diff > 0 && diff <= 10) {
+                message = '"Døren til klasselokalet er stadig åben "Neeej hvor flot! Det er derfor du er min yndlingselev!" - Siger Anders rosende til dig"';
+            } else if (diff > 10 && diff <= 29) {
+                message = '"Du åbner stille døren og Anders kigger lidt hårdt på dig, men fortsætter undervisningen."';
+            } else if (diff > 30 && diff <= 59) {
+                message = '"Du åbner døren til klasse værelset "Ti stille, du er for sent på den!" - Vrisser Anders af dig, og går videre med undervisningen Anders efter dig"';
+            } else if (diff >= 60 && diff <= 299) {
+                message = '"Du åbner døren til klasse værelset "Du er den værste elev, jeg har haft!" - hvisker Anders, så kun du kan høre det"';
+            } else if (diff >= 300 && diff <= 599) {
+                message = '"Du åbner døren til klasse værelset "AARGH! GÅ HJEM!" - Råber Anders efter dig"';
+            } else if (diff >= 600 && diff <= 11700) {
+                message = '"Døren er låst... Anders kigger koldt på dig og imens han kører fingeren over halsen..."';
+            } else {
+                message = '"Klasseværelset er tomt og koldt. Du har fanme dummet dig. Men du undgik Anders vrede."';
+            }
+
+            document.getElementById("message").innerText = message;
+
+
+            const resultBox = document.getElementById("resultBox");
+            resultBox.style.display = "block";
+            resultBox.innerHTML = `
+                <p>Dint tid: <strong>${clickTime.toLocaleTimeString()}</strong></p>
+                <p>Måletid: <strong>${choosenTime.toLocaleTimeString()}</strong></p>
+                <p>Afvigelse: <strong>${formatTimeDifference(diff)}</strong></p>
+            `;    
+
+        }
+
+        function formatTimeDifference(seconds) {
+            const absSeconds = Math.abs(seconds);
+            const hours = Math.floor(absSeconds / 3600);
+            const minutes = Math.floor((absSeconds % 3600) / 60);
+            const secs = absSeconds % 60;
+
+            let parts = [];
+            if (hours > 0) parts.push(`${hours} time${hours !== 1 ? "r" : ""}`);
+            if (minutes > 0) parts.push(`${minutes} minut${minutes !== 1 ? "ter" : ""}`);
+            if (secs > 0) parts.push(`${secs} sekund${secs !== 1 ? "er" : ""}`);
+
+        return parts.join(", ");
+    }
+    </script>
+
+
+    <h1>Too Late??</h1>
+    <p class="gamePlan">Dette lille spil handler om at få Anders' "approvel". Ved hjælp af din intuition skal du prøve at komme så præcis til tiden, som muligt.
+    </p>
+    <p class="gamePlan">OBS: For tidligt er nødvendigvis heller ikke godt.
+    </p>
+    <p>Vælg et tidspunkt du vil prøve at ramme, og tryk på "NU!", når du tror tiden passer.</p>
+    <div class="time-container">
+        <input type="time" id="targetTime">
+        <button id="startButton" onClick="startTest()">Start</button>
+    </div>
+    <button onclick="recordClick()" disabled id="clickButton">NU!</button>
+
+    <p id="message"></p>
+    <div id="resultBox"></div>
+
+    <div id="infoBox">
+        <p>Vær opmærksom på at dette er et karikeret scenarie af vores lærer, som er ment for sjov, 
+        da vi jo alle kender til hans passion for tid. Dette er delt med Anders' accept.</p>
+    </div>
+
+
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #1e1e1e;
+        color: white;
+        margin-top: 50px;
+        font-size:2rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: #ff4d4d;
+        text-shadow: 3px 3px 5px rgba(255, 77, 77, 0.6);
+    }
+
+    button {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    .time-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    }
+
+    .gamePlan {
+        font-size: 1rem;
+    }
+
+    #message {
+        margin-top: 70px;
+        margin-bottom: 70px;
+        font-size: 1.5rem; /* Gør det større */
+        font-weight: bold;
+        font-style: italic; /* Gør teksten kursiv */
+        color: #ffd700; /* Gul farve */
+        text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.5);
+    }
+
+    #targetTime, #startButton {
+        font-size: 1.5rem;
+        padding: 10px;
+        width: 120px; /* Sætter en fast bredde for ensartethed */
+        box-sizing: border-box; /* Inkluderer padding og border i bredden */
+        border: none;
+        border-radius: 5px;
+    }
+
+    #startButton {
+        background-color: #f9f8f8; /* Baggrundsfarve for knappen */
+        color: rgb(223, 58, 58); /* Tekstfarve for knappen */
+        font-weight: bold;
+    }
+
+    #clickButton {
+        display: block;
+        width: 80%;
+        max-width: 300px;
+        margin: 20px auto;
+        font-size: 2rem;
+        font-weight: bold;
+        padding: 20px;
+        background-color: #ff4d4d;
+        color: white;
+        border-radius: 10px;
+    }
+
+    #clickButton:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+
+    #resultBox {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #2e2e2e;
+        border: 2px solid #ff4d4d;
+        border-radius: 10px;
+        display: none;
+        font-size: 1.2rem;
+    }
+    #infoBox {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 600px;
+        background-color: #333;
+        border: 2px solid #ff4d4d;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #ddd;
+        padding: 15px;
+    }
+
+</style>
+
